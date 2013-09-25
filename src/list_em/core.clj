@@ -3,8 +3,10 @@
             [clojure.java.io])
   (:gen-class))
 
+;; Global vector to hold file string list
 (def master-list (atom []))
 
+;; Recursively go through each directory
 (defn list-dir [dir-name]
   (let [file (new java.io.File dir-name)]
     (if (not (.isDirectory file))
@@ -18,10 +20,12 @@
         (doseq [child file-list]
           (list-dir (.getAbsolutePath child)))))))
 
+;; Save global vector to specified file
 (defn save-dir-list [file-name]
   (doseq [file @master-list]
     (spit file-name (str (first file) "\n") :append true)))
 
+;; Runner
 (defn -main [& args]
   (try
     (let [directory-path (first args) save-file (second args)]
