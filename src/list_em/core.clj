@@ -1,12 +1,9 @@
 (ns list-em.core
   (:require [clojure.string :only (join split)]
             [clojure.java.io]
+            [list-em.utils :as utils]
             [me.raynes.fs :as fs])
   (:gen-class))
-
-;; Helper Functions
-(defn f-children [file]
-  (.listFiles file))
 
 ;; List a directory path recursively, returning a vector
 (defn list-dir [dir-name]
@@ -24,7 +21,7 @@
             remaining-files)
           ;; We found a dir, let's add children, then recurse
           (recur
-            accum (into (vec (seq (f-children file)))
+            accum (into (vec (seq (utils/f-children file)))
             remaining-files)))))))
 
 ;; Save new local vector to specified file
