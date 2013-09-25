@@ -21,7 +21,6 @@
         (str file-path))
       ;; Is a directory, let's recurse
       (let [file-list (f-children file)]
-        (println dir-name)
         ;; Send each child through list-dir and return
         (doseq [child file-list]
           (list-dir (fs/absolute-path child)))))))
@@ -39,7 +38,6 @@
       (list-dir directory-path)
       (save-dir-list save-file))
     (catch Exception e
-      (println (str e))
       (println "USAGE: java -jar list-em.jar /path/to/dir /path/to/file.txt")))
   ;; Ensure we don't return anything
   nil)
