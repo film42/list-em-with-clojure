@@ -1,13 +1,17 @@
 # list-em
 
-A Clojure library designed to ... well, that part is up to you.
+A simple recursive directory lister, prints to a file.
 
 ## Usage
 
-FIXME
+Run the following...
+
+```
+java -jar list-em.jar /path/to/dir /path/to/save/file.txt
+```
 
 ## License
 
-Copyright © 2013 FIXME
+Copyright © Garrett T
 
 Distributed under the Eclipse Public License, the same as Clojure.
