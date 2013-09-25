@@ -8,35 +8,36 @@
 (defn f-children [file]
   (.listFiles file))
 
-;; Global vector to hold file string list
-(def master-list (atom []))
-
-;; Recursively go through each directory
+;; List a directory path recursively, returning a vector
 (defn list-dir [dir-name]
-  (let [file (fs/file dir-name)]
-    (if (not (fs/directory? file))
-      ;; Is a file, let's save it
-      (let [file-path (fs/absolute-path file)]
-        (swap! master-list conj [file-path])
-        (str file-path))
-      ;; Is a directory, let's recurse
-      (let [file-list (f-children file)]
-        ;; Send each child through list-dir and return
-        (doseq [child file-list]
-          (list-dir (fs/absolute-path child)))))))
+  ;; Create in function recursive loop
+  (loop [accum [] [next-child & remaining-files] [dir-name]]
+    (if-not next-child
+      ;; Final return
+      accum
+      ;; File processing
+      (let [file (fs/file next-child)]
+        (if-not (fs/directory? file)
+          ;; We found a file, let's add and iterate
+          (recur
+            (conj accum (str (fs/absolute-path file)))
+            remaining-files)
+          ;; We found a dir, let's add children, then recurse
+          (recur
+            accum (into (vec (seq (f-children file)))
+            remaining-files)))))))
 
-;; Save global vector to specified file
-(defn save-dir-list [file-name]
-  (doseq [file @master-list]
-    (spit file-name (str (first file) "\n") :append true)))
+;; Save new local vector to specified file
+(defn save-dir-list [file-name file-list]
+  (doseq [file file-list]
+    (spit file-name (str file "\n") :append true)))
 
 ;; Runner
 (defn -main [& args]
   (try
     (let [directory-path (first args) save-file (second args)]
-      (list-dir directory-path)
-      (save-dir-list save-file))
+      (let [file-list (list-dir directory-path)]
+        (save-dir-list save-file file-list)))
     (catch Exception e
       (println "USAGE: java -jar list-em.jar /path/to/dir /path/to/file.txt")))
-  ;; Ensure we don't return anything
   nil)
