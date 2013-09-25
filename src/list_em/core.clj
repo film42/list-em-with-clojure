@@ -23,7 +23,11 @@
     (spit file-name (str (first file) "\n") :append true)))
 
 (defn -main [& args]
-  (list-dir (first args))
-  (save-dir-list (second args))
+  (try
+    (let [directory-path (first args) save-file (second args)]
+      (list-dir directory-path)
+      (save-dir-list save-file))
+    (catch Exception e
+      (println "USAGE: java -jar list-em.jar /path/to/dir /path/to/file.txt")))
   ;; Ensure we don't return anything
   nil)
