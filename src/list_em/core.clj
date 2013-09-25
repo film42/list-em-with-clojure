@@ -28,7 +28,6 @@
 ;; Save global vector to specified file
 (defn save-dir-list [file-name]
   (doseq [file @master-list]
-;;    (println (first file))
     (spit file-name (str (first file) "\n") :append true)))
 
 ;; Runner
